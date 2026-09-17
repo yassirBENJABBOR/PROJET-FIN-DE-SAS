@@ -33,16 +33,25 @@ function normaliserNom(nomComplet){
 }
 function ajouterApprenant(id,nom,ville){
      id = parseInt(prompt("veiller saisire votr id: "));
-     nom = prompt("veiller saisire le nom compler: ");
-     ville = prompt("veiller saisire votre vill: ");
-    return {
- id,
- nomComplet :normaliserNom(nom),
- ville,
- resultats: []
- }
-}
+    for(let i=0; i<apprenants.length; i++){
+     while (isNaN(id) || apprenants[i].id==id) {
+        id = parseInt(prompt(`Erreur : Cet ID existe deja ou il n'est pas un nombre veiller saisire une autre id : `));
+        }
+    }
+      nom = prompt("veiller saisire le nom compler: ");
+      ville = prompt("veiller saisire votre vill: ");
 
+    var nouvelApprenant= {
+        id:id,
+        nomComplet :normaliserNom(nom),
+        ville :ville,
+        resultats: []
+ }
+ apprenants.push(nouvelApprenant)
+ console.log("Apprenant ajoute avec succes !");
+ return nouvelApprenant
+
+}
 
 function validerResultat(jour, exercicesTermines, totalExercices){
     var totalExercices =20;
@@ -56,8 +65,6 @@ function validerResultat(jour, exercicesTermines, totalExercices){
         exercicesTermines = parseInt(prompt("veuiller saisire combien d'exercices terminer entre 1 et 20 : "))
     }
 
-    
-    
     return{
         resultats: [
  { jour:jour, 
@@ -65,7 +72,60 @@ function validerResultat(jour, exercicesTermines, totalExercices){
    totalExercices: totalExercices},
  ]
  }
+ 
 }
+function rechercherApprenant(id) {
+    for (let i = 0; i < apprenants.length; i++) {
+        if (apprenants[i].id === id) {
+            return apprenants[i]; 
+        }
+    return null; 
+    }
+}
+
+
+
+
+function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercices, challengeTermine){
+    // console.log ("Ajouter votre avancement");
+    // for(let i=0; i<apprenants.length; i++){
+    //     while(apprenants[i].id!==id){
+    //         console.log("Apprenant non trouvé");       
+    //         break;
+    //     }
+    // jour = parseInt(prompt("Veuiller saisire votre joure entre 1 et 7 : "));
+        
+    // }
+    let id = parseInt(prompt("Veuillez saisir l'ID de l'apprenant : "));
+    for (let i = 0; i < apprenants.length; i++){
+        if (isNaN(jour) || jour < 1 || jour > 7) {
+                console.log("Erreur : Le jour doit etre entre 1 et 7.");
+                return;
+            }
+    }
+}
+
+
+function calculerProgression(apprenant){
+    let totalExercices =0;
+    let totalProposes = 0
+    let challengecount =0
+    let joursRs= apprenant.resultats.length;
+
+    for(let i=0; i<joursRs; i++){
+        let res = apprenant.resultats[i];
+        totalExercices += res.exercicesTermines
+        totalProposes += res.totalExercices;
+        totalProposes += res.totalExercices;
+        if(res.challengeTermine){
+            challengecount ++;
+        }
+    }
+
+
+}
+
+
 console.log(apprenants)
 
 
@@ -98,7 +158,7 @@ do {
       console.log("4. Consulter un apprenant par identifiant");
       break;
     case 5:
-      console.log(validerResultat());
+      console.log(enregistrerResultat());
       break;
     case 6:
       console.log("6. Rechercher un apprenant par nom");
