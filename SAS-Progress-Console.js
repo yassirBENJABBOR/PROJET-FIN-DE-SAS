@@ -1,3 +1,5 @@
+const prompt = require('prompt-sync')();
+
 const apprenants = [
  {
  id: 1,
@@ -22,8 +24,52 @@ const apprenants = [
 ];
 
 
-const prompt = require('prompt-sync')();
 
+
+//LES FUNCTION 
+function normaliserNom(nomComplet){
+    return nomComplet.trim().toLowerCase()
+
+}
+function ajouterApprenant(id,nom,ville){
+     id = parseInt(prompt("veiller saisire votr id: "));
+     nom = prompt("veiller saisire le nom compler: ");
+     ville = prompt("veiller saisire votre vill: ");
+    return {
+ id,
+ nomComplet :normaliserNom(nom),
+ ville,
+ resultats: []
+ }
+}
+
+
+function validerResultat(jour, exercicesTermines, totalExercices){
+    var totalExercices =20;
+
+    jour = parseInt(prompt("veuiller saisire numero de la journer: "))
+    while (isNaN(jour) || jour < 1 || jour > 7) {
+        jour = parseInt(prompt("veuiller saisire la journer correcte entre 1 et 7 : "))
+    }
+    exercicesTermines = parseInt(prompt("veuiller saisire combien d'exercices terminer : "))
+    while (isNaN(exercicesTermines) || exercicesTermines < 0 || exercicesTermines > totalExercices) {
+        exercicesTermines = parseInt(prompt("veuiller saisire combien d'exercices terminer entre 1 et 20 : "))
+    }
+
+    
+    
+    return{
+        resultats: [
+ { jour:jour, 
+   exercicesTermines: exercicesTermines,
+   totalExercices: totalExercices},
+ ]
+ }
+}
+console.log(apprenants)
+
+
+//TABLEAU DE BORDE 
 let choix;
       console.log("---------SAS PROGRESS CONSOLE---------");
       console.log("1. Afficher le tableau de bord");
@@ -37,7 +83,7 @@ let choix;
       console.log("9. Trier les apprenants par ordre alphabétique");
       console.log("0. QUITER");
 do {
-  choix = apprenants(prompt("Votre choix :"));
+  choix = parseInt(prompt("Votre choix :"));
   switch (choix) {
     case 1:
       console.log("1. Afficher le tableau de bord");
@@ -46,13 +92,13 @@ do {
       console.log("2. Afficher la liste des apprenants");
       break;
     case 3:
-      console.log("3. Ajouter un apprenant");
+       console.log(ajouterApprenant())
       break;
     case 4:
       console.log("4. Consulter un apprenant par identifiant");
       break;
     case 5:
-      console.log("5. Ajouter ou modifier le résultat d'une journée");
+      console.log(validerResultat());
       break;
     case 6:
       console.log("6. Rechercher un apprenant par nom");
@@ -74,3 +120,5 @@ do {
       break;
   }
 } while (choix !== 0);
+
+
