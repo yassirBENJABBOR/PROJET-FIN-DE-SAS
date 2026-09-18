@@ -238,7 +238,7 @@ function calculerProgression(apprenants){
 
     };
 
-        
+
 }
 
 function filtrerParNiveau (apprenants){
