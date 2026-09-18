@@ -25,6 +25,60 @@ const apprenants = [
 
 
 
+//TABLEAU DE BORDE 
+let choix;
+      console.log("---------SAS PROGRESS CONSOLE---------");
+      console.log("1. Afficher le tableau de bord");
+      console.log("2. Afficher la liste des apprenants");
+      console.log("3. Ajouter un apprenant");
+      console.log("4. Consulter un apprenant par identifiant");
+      console.log("5. Ajouter ou modifier le résultat d'une journée");
+      console.log("6. Rechercher un apprenant par nom");
+      console.log("7. Filtrer les apprenants par niveau");
+      console.log("8. Trier les apprenants par progression décroissante");
+      console.log("9. Trier les apprenants par ordre alphabétique");
+      console.log("0. QUITER");
+do {
+  choix = parseInt(prompt("Votre choix :"));
+  switch (choix) {
+    case 1:
+      console.log("1. Afficher le tableau de bord");
+      break;
+    case 2:
+      console.log("2. Afficher la liste des apprenants");
+      break;
+    case 3:
+       console.log(ajouterApprenant())
+      break;
+    case 4:
+      console.log(rechercherParId());
+      break;
+    case 5:
+      console.log(enregistrerResultat());
+      break;
+    case 6:
+      console.log(rechercherParNom());
+      break;
+    case 7:
+    let resultats = filtrerParNiveau(apprenants);
+    console.log(resultats);      
+    break;
+    case 8:
+      console.log("8. Trier les apprenants par progression décroissante");
+      break;
+    case 9:
+      console.log("9. Trier les apprenants par ordre alphabétique");
+      break;
+    case 0:
+      console.log("Au revoir !");
+      break;
+    default:
+      console.log("Choix invalide, veuillez entrer un nombre entre 0 et 9.");
+      break;
+  }
+} while (choix !== 0);
+
+
 
 //LES FUNCTION 
 function normaliserNom(nomComplet){
@@ -83,6 +137,7 @@ function rechercherApprenant(id) {
     return "Apprenant introuvable"; 
 }
 
+
 function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercices, challengeTermine){
     idApprenant = prompt("veiller saisire id de apprenant: ")
 
@@ -125,87 +180,81 @@ function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercice
 
 }
 
-function calculerProgression(apprenant){
-    let totalExercices =0;
-    let totalProposes = 0
-    let challengecount =0
-    let jours= apprenant.resultats.length;
-
-    for(let i=0; i<jours; i++){
-        let res = apprenant.resultats[i];
-        totalExercices += res.exercicesTermines
-        totalProposes += res.totalExercices;
-        totalProposes += res.totalExercices;
-        if(res.challengeTermine){
-            challengecount ++;
-        }
-    }
-
-
-}
 function rechercherParNom(nomComplet){
-    let completNom = nomComplet;
-    let arrnom = [];
-    for (let i = 0 ; i < apprenants.length ; i++){
-        if(apprenants[i].nomComplet.toLowerCase().includes(completNom)){
-            arrnom.push(apprenants[i])
+    nomComplet = prompt("Veuillez saisir le nom de l'apprenant : ");
+    if (!nomComplet) {
+        console.log("Erreur : Le nomComplet ne peut pas etre vide.");
+        return;
+    }
+    for (let i = 0; i < apprenants.length; i++) {
+        if (normaliserNom(apprenants[i].nomComplet).includes(normaliserNom(nomComplet))) {
+            return apprenants[i];
+            
         }
     }
-    return arrnom;
+        console.log("Aucun apprenant trouve pour : " + nomComplet);
+    
+}
+
+function rechercherParId(id) {
+    
+    id = parseInt(prompt("veuiller saisire ID pou le verifier : "))
+    for (let i = 0; i < apprenants.length; i++) {
+        while (apprenants[i].id == id) {
+            console.log("Apprenant trouvable")
+            return apprenants[i];
+        }
+    }
+    return "Apprenant introuvable"; 
+}
+function calculerProgression(apprenants){
+
+    const TotaleExsSemain = 140;
+    let TotalExercicesFaits = 0;
+    let TotalChallengesValides = 0;
+    for (let i = 0; i < apprenants.length; i++){
+    for (let j=0 ;j<apprenants[i].resultats.length;j++){
+        TotalExercicesFaits += apprenants[i].resultats[j].exercicesTermines;
+
+        if(apprenants[i].resultats[j].challengeTermines == true ){
+            TotalChallengesValides++;
+        }
+    }
+    }
+
+    let Progretion = parseInt((TotalExercicesFaits / TotaleExsSemain) * 100);
+    let statut = "A renforcer";
+
+    if (Progretion >= 80) {
+        statut = "Solide";
+    } else if (Progretion >= 50) {
+        statut = "En progression";
+    }
+    return {
+        exercicesFaits: TotalExercicesFaits,
+        challengesValides: TotalChallengesValides,
+        pourcentage: Progretion,
+        statut: statut
+
+    };
+
+        
+}
+
+function filtrerParNiveau (apprenants){
+
+    let niveau = prompt("veuiller saisire votre niveau A renforcer / Solide /En progression :")
+    let resultats = [];
+    for(let i=0 ; i<apprenants.length ; i++){
+        let info = calculerProgression([apprenants[i]]);
+    if(info.statut.toLowerCase() === niveau.toLowerCase()){
+        resultats.push(apprenants[i]);
+
+    }        
+
+    }
+    return resultats;
 }
 
 
-console.log(apprenants)
 
-
-//TABLEAU DE BORDE 
-let choix;
-      console.log("---------SAS PROGRESS CONSOLE---------");
-      console.log("1. Afficher le tableau de bord");
-      console.log("2. Afficher la liste des apprenants");
-      console.log("3. Ajouter un apprenant");
-      console.log("4. Consulter un apprenant par identifiant");
-      console.log("5. Ajouter ou modifier le résultat d'une journée");
-      console.log("6. Rechercher un apprenant par nom");
-      console.log("7. Filtrer les apprenants par niveau");
-      console.log("8. Trier les apprenants par progression décroissante");
-      console.log("9. Trier les apprenants par ordre alphabétique");
-      console.log("0. QUITER");
-do {
-  choix = parseInt(prompt("Votre choix :"));
-  switch (choix) {
-    case 1:
-      console.log("1. Afficher le tableau de bord");
-      break;
-    case 2:
-      console.log("2. Afficher la liste des apprenants");
-      break;
-    case 3:
-       console.log(ajouterApprenant())
-      break;
-    case 4:
-      console.log(rechercherApprenant());
-      break;
-    case 5:
-      console.log(enregistrerResultat());
-      break;
-    case 6:
-      console.log(rechercherParNom());
-      break;
-    case 7:
-      console.log("7. Filtrer les apprenants par niveau");
-      break;
-    case 8:
-      console.log("8. Trier les apprenants par progression décroissante");
-      break;
-    case 9:
-      console.log("9. Trier les apprenants par ordre alphabétique");
-      break;
-    case 0:
-      console.log("Au revoir !");
-      break;
-    default:
-      console.log("Choix invalide, veuillez entrer un nombre entre 0 et 9.");
-      break;
-  }
-} while (choix !== 0);
