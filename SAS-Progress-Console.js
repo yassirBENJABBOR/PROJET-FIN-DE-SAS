@@ -76,43 +76,62 @@ function validerResultat(jour, exercicesTermines, totalExercices){
 }
 function rechercherApprenant(id) {
     for (let i = 0; i < apprenants.length; i++) {
-        if (apprenants[i].id === id) {
-            return apprenants[i]; 
+        if (apprenants[i].id !== id) {
+            return apprenants[i];
         }
-    return null; 
     }
+    return "Apprenant introuvable"; 
 }
-
-
-
 
 function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercices, challengeTermine){
-    // console.log ("Ajouter votre avancement");
-    // for(let i=0; i<apprenants.length; i++){
-    //     while(apprenants[i].id!==id){
-    //         console.log("Apprenant non trouvé");       
-    //         break;
-    //     }
-    // jour = parseInt(prompt("Veuiller saisire votre joure entre 1 et 7 : "));
-        
-    // }
-    let id = parseInt(prompt("Veuillez saisir l'ID de l'apprenant : "));
-    for (let i = 0; i < apprenants.length; i++){
-        if (isNaN(jour) || jour < 1 || jour > 7) {
-                console.log("Erreur : Le jour doit etre entre 1 et 7.");
-                return;
-            }
-    }
-}
+    idApprenant = prompt("veiller saisire id de apprenant: ")
 
+    let Apprenant = rechercherApprenant(idApprenant)
+    while (Apprenant === null) {
+        idApprenant = prompt("Erreur: Apprenant non trouve. Veuillez saisir un ID valide : ");
+        Apprenant = rechercherApprenant(idApprenant);
+    }
+    jour = parseInt(prompt("Saisir le jour de 1 a 7: "));
+    while (isNaN(jour) || jour < 1 || jour > 7) {
+        jour = parseInt(prompt("Erreur ! Veuillez saisir un jour valide entre 1 et 7 : "));
+    }
+    totalExercices = 20;
+    exercicesTermines = parseInt(prompt("Saisir exercices termines sur 20 : "));
+    while (isNaN(exercicesTermines) || exercicesTermines < 0 || exercicesTermines > totalExercices) {
+        exercicesTermines = parseInt(prompt("Erreur ! Veuillez saisir un nombre entre 0 et 20 : "));
+    }
+
+    let reponseChallenge = prompt("Est-ce que le Challenge est termine ? (oui/non) : ").toLowerCase();
+    while (reponseChallenge !== "oui" && reponseChallenge !== "non") {
+        reponseChallenge = prompt("Erreure! Veuillez repondre par 'oui' ou 'non' : ").toLowerCase();
+    }
+    challengeTermine = (reponseChallenge === "oui");
+
+    for (let i = 0; i < Apprenant.resultats.length; i++) {
+        if (Apprenant.resultats[i].jour === jour) {
+            Apprenant.resultats[i].exercicesTermines = exercicesTermines;
+            Apprenant.resultats[i].challengeTermine = challengeTermine;             
+        }
+    }
+    const nouveauResultat = {
+        jour : jour,
+        exercicesTermines : exercicesTermines,
+        totalExercices : totalExercices,
+        challengeTermine : challengeTermine,
+    }
+
+    Apprenant.resultats.push(nouveauResultat)
+    return "Résultat ajouté avec succès"
+
+}
 
 function calculerProgression(apprenant){
     let totalExercices =0;
     let totalProposes = 0
     let challengecount =0
-    let joursRs= apprenant.resultats.length;
+    let jours= apprenant.resultats.length;
 
-    for(let i=0; i<joursRs; i++){
+    for(let i=0; i<jours; i++){
         let res = apprenant.resultats[i];
         totalExercices += res.exercicesTermines
         totalProposes += res.totalExercices;
@@ -123,6 +142,16 @@ function calculerProgression(apprenant){
     }
 
 
+}
+function rechercherParNom(nomComplet){
+    let completNom = nomComplet;
+    let arrnom = [];
+    for (let i = 0 ; i < apprenants.length ; i++){
+        if(apprenants[i].nomComplet.toLowerCase().includes(completNom)){
+            arrnom.push(apprenants[i])
+        }
+    }
+    return arrnom;
 }
 
 
@@ -155,13 +184,13 @@ do {
        console.log(ajouterApprenant())
       break;
     case 4:
-      console.log("4. Consulter un apprenant par identifiant");
+      console.log(rechercherApprenant());
       break;
     case 5:
       console.log(enregistrerResultat());
       break;
     case 6:
-      console.log("6. Rechercher un apprenant par nom");
+      console.log(rechercherParNom());
       break;
     case 7:
       console.log("7. Filtrer les apprenants par niveau");
@@ -180,5 +209,3 @@ do {
       break;
   }
 } while (choix !== 0);
-
-
