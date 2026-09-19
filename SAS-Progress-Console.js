@@ -20,7 +20,15 @@ const apprenants = [
  { jour: 1, exercicesTermines: 12,
  totalExercices: 20, challengeTermine: false }
  ]
- }
+ } , {
+ id: 3,
+ nomComplet: "Ahmed Pro",
+ ville: "Oujda",
+ resultats: [
+ { jour: 1, exercicesTermines: 7,
+ totalExercices: 20, challengeTermine: false }
+ ]
+ } ,
 ];
 
 
@@ -42,10 +50,10 @@ do {
   choix = parseInt(prompt("Votre choix :"));
   switch (choix) {
     case 1:
-      console.log("1. Afficher le tableau de bord");
+      afficherTableauDeBord(apprenants)
       break;
     case 2:
-      console.log("2. Afficher la liste des apprenants");
+      afficherListeApprenants(apprenants)
       break;
     case 3:
        console.log(ajouterApprenant())
@@ -64,10 +72,10 @@ do {
     console.log(resultats);      
     break;
     case 8:
-      console.log("8. Trier les apprenants par progression décroissante");
+      trierParProgression();
       break;
     case 9:
-      console.log("9. Trier les apprenants par ordre alphabétique");
+      trierParAlphabetique()
       break;
     case 0:
       console.log("Au revoir !");
@@ -209,12 +217,13 @@ function rechercherParId(id) {
 }
 function calculerProgression(apprenants){
 
-    const TotaleExsSemain = 140;
+    let TotaleExsSemain = 0;
     let TotalExercicesFaits = 0;
     let TotalChallengesValides = 0;
     for (let i = 0; i < apprenants.length; i++){
     for (let j=0 ;j<apprenants[i].resultats.length;j++){
         TotalExercicesFaits += apprenants[i].resultats[j].exercicesTermines;
+        TotaleExsSemain +=apprenants[i].resultats[j].totalExercices;
 
         if(apprenants[i].resultats[j].challengeTermines == true ){
             TotalChallengesValides++;
@@ -222,7 +231,7 @@ function calculerProgression(apprenants){
     }
     }
 
-    let Progretion = parseInt((TotalExercicesFaits / TotaleExsSemain) * 100);
+    let Progretion = Math.floor((TotalExercicesFaits / TotaleExsSemain) * 100);
     let statut = "A renforcer";
 
     if (Progretion >= 80) {
@@ -244,17 +253,110 @@ function calculerProgression(apprenants){
 function filtrerParNiveau (apprenants){
 
     let niveau = prompt("veuiller saisire votre niveau A renforcer / Solide /En progression :")
+    if (!niveau) return [];
     let resultats = [];
     for(let i=0 ; i<apprenants.length ; i++){
         let info = calculerProgression([apprenants[i]]);
     if(info.statut.toLowerCase() === niveau.toLowerCase()){
-        resultats.push(apprenants[i]);
+        resultats.push({
+            id: apprenants[i].id,
+            nomComplet: apprenants[i].nomComplet,
+            progression: info.pourcentage ,
+            niveau: info.statut
+        });
+
 
     }        
-
     }
     return resultats;
 }
 
+function trierParProgression(){
+let n = apprenants.length;
 
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = i + 1; j < n; j++) {
 
+            let progI = calculerProgression([apprenants[i]]).pourcentage;
+            let progJ = calculerProgression([apprenants[j]]).pourcentage;
+
+            if (progJ > progI) {
+                let temp = apprenants[i];
+                apprenants[i] = apprenants[j];
+                apprenants[j] = temp;
+            }
+        }
+    }
+    console.log("=== APPRENANTS TRIES PAR PROGRESSION (DECROISSANT) ===");
+    for (let k = 0; k < apprenants.length; k++) {
+        let info = calculerProgression([apprenants[k]]);
+        console.log((k + 1) + ". " + apprenants[k].nomComplet + " | Progression : " + info.pourcentage + "% (" + info.statut + ")");
+    }
+
+}
+function trierParAlphabetique(){
+    let n = apprenants.length;
+
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = i + 1; j < n; j++) {
+
+            let nomI = normaliserNom(apprenants[i].nomComplet);
+            let nomJ = normaliserNom(apprenants[j].nomComplet);
+
+            if (nomI > nomJ) {
+                let temp = apprenants[i];
+                apprenants[i] = apprenants[j];
+                apprenants[j] = temp;
+            }
+        }
+    }
+        console.log("=== APPRENANTS TRIES PAR ORDRE ALPHABETIQUE (A-Z) ===");
+    for (let k = 0; k < apprenants.length; k++) {
+        let info = calculerProgression([apprenants[k]]);
+        console.log((k + 1) + ". " + apprenants[k].nomComplet + " | Progression : " + info.pourcentage + "% (" + info.statut + ")");
+    }
+}
+
+function afficherTableauDeBord(apprenants) {
+    console.log("======TABLEAU DE BORD GLOBAL======");
+    let totalApprenants = apprenants.length;
+    console.log("Nombre total d'apprenants : " + totalApprenants);
+
+    if (totalApprenants === 0) {
+        console.log("Aucun apprenant enregistre pour le moment.");
+        return;
+    }
+
+    let sommePourcentages = 0;
+
+    console.log("======DETAIL PAR APPRENANT======");
+    for (let i = 0; i < totalApprenants; i++) {
+        let info = calculerProgression([apprenants[i]]);
+        sommePourcentages += info.pourcentage;
+
+        console.log((i + 1) + ". " + apprenants[i].nomComplet + " (" + apprenants[i].ville + ")");
+        console.log("   Progression : " + info.pourcentage + "% | Statut : " + info.statut);
+        console.log("   Exercices faits : " + info.exercicesFaits + " | Challenges valides : " + info.challengesValides);
+        console.log("    ==================   ");
+    }
+
+    let moyenneGroupe = Math.round(sommePourcentages / totalApprenants);
+
+    console.log("\n Moyenne du progression de groupe : " + moyenneGroupe + "% \n" );
+}
+
+function afficherListeApprenants(apprenants) {
+    console.log("=======LISTE DES APPRENANTS=======");
+    if (apprenants.length === 0) {
+        console.log("Aucun apprenant enregistre dans la liste.");
+        return;
+    }
+
+    for (let i = 0; i < apprenants.length; i++) {
+        let info = calculerProgression([apprenants[i]]);
+        
+        console.log((i + 1) + ". ID: " + apprenants[i].id + " | Nom: " + apprenants[i].nomComplet + " | Ville: " + apprenants[i].ville);
+        console.log("   Progression: " + info.pourcentage + "% | Statut: " + info.statut);
+        console.log("-----------------------------------");
+    }
+}
