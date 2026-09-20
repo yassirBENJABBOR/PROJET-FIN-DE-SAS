@@ -43,8 +43,6 @@ const apprenants = [
 
 //TABLEAU DE BORDE 
 let choix;
-
-do {
     console.log("---------SAS PROGRESS CONSOLE---------");
     console.log("1. Afficher le tableau de bord");
     console.log("2. Afficher la liste des apprenants");
@@ -56,6 +54,8 @@ do {
     console.log("8. Trier les apprenants par progression décroissante");
     console.log("9. Trier les apprenants par ordre alphabétique");
     console.log("0. QUITER");
+do {
+
     choix = parseInt(prompt("Votre choix :"));
     switch (choix) {
         case 1:
@@ -103,10 +103,10 @@ function normaliserNom(nomComplet) {
 }
 // check  la presence d un item au tableau 
 function validateID(id, persones) {
-    if(id===0 || isNaN(id)) {
+    if (id === 0 || isNaN(id)) {
         console.log("Error! il doit etre nombre ou superieure a 0")
         return false;
-        }
+    }
     let isValid = true;
     for (i = 0; i < persones.length; i++) {
 
@@ -120,9 +120,9 @@ function validateID(id, persones) {
 }
 function ajouterApprenant() {
 
-    let id=null;
+    let id = null;
     do {
-        id= parseInt(prompt("veiller saisire votr id: "));
+        id = parseInt(prompt("veiller saisire votr id: "));
 
     } while (!validateID(id, apprenants))
 
@@ -167,28 +167,31 @@ function validerResultat(jour, exercicesTermines, totalExercices) {
 }
 function rechercherApprenant(id) {
     for (let i = 0; i < apprenants.length; i++) {
-        if (apprenants[i].id !== id) {
+        if (apprenants[i].id == id) {
             return apprenants[i];
         }
     }
     return "Apprenant introuvable";
 }
 
+// a exploiter sur is id valide li kayna ajouter apprenant 
+function enregistrerResultat() {
+    let idApprenant
 
-function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercices, challengeTermine) {
-    idApprenant = prompt("veiller saisire id de apprenant: ")
-
-    let Apprenant = rechercherApprenant(idApprenant)
-    while (Apprenant === null) {
-        idApprenant = prompt("Erreur: Apprenant non trouve. Veuillez saisir un ID valide : ");
+    let Apprenant
+    do {
+        idApprenant = prompt("veiller saisire id de apprenant: ")
         Apprenant = rechercherApprenant(idApprenant);
-    }
-    jour = parseInt(prompt("Saisir le jour de 1 a 7: "));
+        if(Apprenant=== "Apprenant introuvable"){
+            console.log("Erreur ! Apprenant introuvable")
+        }
+    } while (Apprenant === "Apprenant introuvable")
+    let jour = parseInt(prompt("Saisir le jour de 1 a 7: "));
     while (isNaN(jour) || jour < 1 || jour > 7) {
         jour = parseInt(prompt("Erreur ! Veuillez saisir un jour valide entre 1 et 7 : "));
     }
-    totalExercices = 20;
-    exercicesTermines = parseInt(prompt("Saisir exercices termines sur 20 : "));
+    let totalExercices = 20;
+    let exercicesTermines = parseInt(prompt("Saisir exercices termines sur 20 : "));
     while (isNaN(exercicesTermines) || exercicesTermines < 0 || exercicesTermines > totalExercices) {
         exercicesTermines = parseInt(prompt("Erreur ! Veuillez saisir un nombre entre 0 et 20 : "));
     }
@@ -197,14 +200,16 @@ function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercice
     while (reponseChallenge !== "oui" && reponseChallenge !== "non") {
         reponseChallenge = prompt("Erreure! Veuillez repondre par 'oui' ou 'non' : ").toLowerCase();
     }
-    challengeTermine = (reponseChallenge === "oui");
-
+    let challengeTermine = (reponseChallenge === "oui");
+    let updated =false ;
     for (let i = 0; i < Apprenant.resultats.length; i++) {
         if (Apprenant.resultats[i].jour === jour) {
             Apprenant.resultats[i].exercicesTermines = exercicesTermines;
             Apprenant.resultats[i].challengeTermine = challengeTermine;
+            updated= true ;
         }
     }
+    if (!updated){
     const nouveauResultat = {
         jour: jour,
         exercicesTermines: exercicesTermines,
@@ -213,7 +218,8 @@ function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercice
     }
 
     Apprenant.resultats.push(nouveauResultat)
-    return "Résultat ajouté avec succès"
+    }
+    return `Résultat ${updated ? "modifie" : "ajoute"} avec succès`
 
 }
 
