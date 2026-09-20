@@ -1,122 +1,149 @@
 const prompt = require('prompt-sync')();
 
 const apprenants = [
- {
- id: 1,
- nomComplet: "Sara Dev",
- ville: "Nador",
- resultats: [
- { jour: 1, exercicesTermines: 18,
- totalExercices: 20, challengeTermine: true },
- { jour: 2, exercicesTermines: 14,
- totalExercices: 20, challengeTermine: false }
- ]
- },
- {
- id: 2,
- nomComplet: "Yassine Code",
- ville: "Oujda",
- resultats: [
- { jour: 1, exercicesTermines: 12,
- totalExercices: 20, challengeTermine: false }
- ]
- } , {
- id: 3,
- nomComplet: "Ahmed Pro",
- ville: "Oujda",
- resultats: [
- { jour: 1, exercicesTermines: 7,
- totalExercices: 20, challengeTermine: false }
- ]
- } ,
+    {
+        id: 1,
+        nomComplet: "Sara Dev",
+        ville: "Nador",
+        resultats: [
+            {
+                jour: 1, exercicesTermines: 18,
+                totalExercices: 20, challengeTermine: true
+            },
+            {
+                jour: 2, exercicesTermines: 14,
+                totalExercices: 20, challengeTermine: false
+            }
+        ]
+    },
+    {
+        id: 2,
+        nomComplet: "Yassine Code",
+        ville: "Oujda",
+        resultats: [
+            {
+                jour: 1, exercicesTermines: 12,
+                totalExercices: 20, challengeTermine: false
+            }
+        ]
+    }, {
+        id: 3,
+        nomComplet: "Ahmed Pro",
+        ville: "Oujda",
+        resultats: [
+            {
+                jour: 1, exercicesTermines: 7,
+                totalExercices: 20, challengeTermine: false
+            }
+        ]
+    },
 ];
 
 
 
 //TABLEAU DE BORDE 
 let choix;
-      console.log("---------SAS PROGRESS CONSOLE---------");
-      console.log("1. Afficher le tableau de bord");
-      console.log("2. Afficher la liste des apprenants");
-      console.log("3. Ajouter un apprenant");
-      console.log("4. Consulter un apprenant par identifiant");
-      console.log("5. Ajouter ou modifier le résultat d'une journée");
-      console.log("6. Rechercher un apprenant par nom");
-      console.log("7. Filtrer les apprenants par niveau");
-      console.log("8. Trier les apprenants par progression décroissante");
-      console.log("9. Trier les apprenants par ordre alphabétique");
-      console.log("0. QUITER");
+
 do {
-  choix = parseInt(prompt("Votre choix :"));
-  switch (choix) {
-    case 1:
-      afficherTableauDeBord(apprenants)
-      break;
-    case 2:
-      afficherListeApprenants(apprenants)
-      break;
-    case 3:
-       console.log(ajouterApprenant())
-      break;
-    case 4:
-      console.log(rechercherParId());
-      break;
-    case 5:
-      console.log(enregistrerResultat());
-      break;
-    case 6:
-      console.log(rechercherParNom());
-      break;
-    case 7:
-    let resultats = filtrerParNiveau(apprenants);
-    console.log(resultats);      
-    break;
-    case 8:
-      trierParProgression();
-      break;
-    case 9:
-      trierParAlphabetique()
-      break;
-    case 0:
-      console.log("Au revoir !");
-      break;
-    default:
-      console.log("Choix invalide, veuillez entrer un nombre entre 0 et 9.");
-      break;
-  }
+    console.log("---------SAS PROGRESS CONSOLE---------");
+    console.log("1. Afficher le tableau de bord");
+    console.log("2. Afficher la liste des apprenants");
+    console.log("3. Ajouter un apprenant");
+    console.log("4. Consulter un apprenant par identifiant");
+    console.log("5. Ajouter ou modifier le résultat d'une journée");
+    console.log("6. Rechercher un apprenant par nom");
+    console.log("7. Filtrer les apprenants par niveau");
+    console.log("8. Trier les apprenants par progression décroissante");
+    console.log("9. Trier les apprenants par ordre alphabétique");
+    console.log("0. QUITER");
+    choix = parseInt(prompt("Votre choix :"));
+    switch (choix) {
+        case 1:
+            afficherTableauDeBord(apprenants)
+            break;
+        case 2:
+            afficherListeApprenants(apprenants)
+            break;
+        case 3:
+            console.log(ajouterApprenant())
+            break;
+        case 4:
+            console.log(rechercherParId());
+            break;
+        case 5:
+            console.log(enregistrerResultat());
+            break;
+        case 6:
+            console.log(rechercherParNom());
+            break;
+        case 7:
+            let resultats = filtrerParNiveau(apprenants);
+            console.log(resultats);
+            break;
+        case 8:
+            trierParProgression();
+            break;
+        case 9:
+            trierParAlphabetique()
+            break;
+        case 0:
+            console.log("Au revoir !");
+            break;
+        default:
+            console.log("Choix invalide, veuillez entrer un nombre entre 0 et 9.");
+            break;
+    }
 } while (choix !== 0);
 
 
-
 //LES FUNCTION 
-function normaliserNom(nomComplet){
+function normaliserNom(nomComplet) {
     return nomComplet.trim().toLowerCase()
 
 }
-function ajouterApprenant(id,nom,ville){
-     id = parseInt(prompt("veiller saisire votr id: "));
-    for(let i=0; i<apprenants.length; i++){
-     while (isNaN(id) || apprenants[i].id==id) {
-        id = parseInt(prompt(`Erreur : Cet ID existe deja ou il n'est pas un nombre veiller saisire une autre id : `));
+// check  la presence d un item au tableau 
+function validateID(id, persones) {
+    if(id===0 || isNaN(id)) {
+        console.log("Error! il doit etre nombre ou superieure a 0")
+        return false;
+        }
+    let isValid = true;
+    for (i = 0; i < persones.length; i++) {
+
+        if (persones[i].id == id) {
+            console.log(`Error! id ${id} Existe deja`)
+
+            isValid = false;
         }
     }
-      nom = prompt("veiller saisire le nom compler: ");
-      ville = prompt("veiller saisire votre vill: ");
+    return isValid
+}
+function ajouterApprenant() {
 
-    var nouvelApprenant= {
-        id:id,
-        nomComplet :normaliserNom(nom),
-        ville :ville,
+    let id=null;
+    do {
+        id= parseInt(prompt("veiller saisire votr id: "));
+
+    } while (!validateID(id, apprenants))
+
+
+    nom = prompt("veiller saisire le nom compler: ");
+    ville = prompt("veiller saisire votre vill: ");
+
+    let nouvelApprenant = {
+        id: id,
+        nomComplet: normaliserNom(nom),
+        ville: ville,
         resultats: []
- }
- apprenants.push(nouvelApprenant)
- console.log("Apprenant ajoute avec succes !");
- return nouvelApprenant
+    }
+    apprenants.push(nouvelApprenant)
+    console.log("Apprenant ajoute avec succes !");
+    return nouvelApprenant
 
 }
 
-function validerResultat(jour, exercicesTermines, totalExercices){
-    var totalExercices =20;
+function validerResultat(jour, exercicesTermines, totalExercices) {
+    var totalExercices = 20;
 
     jour = parseInt(prompt("veuiller saisire numero de la journer: "))
     while (isNaN(jour) || jour < 1 || jour > 7) {
@@ -127,14 +154,16 @@ function validerResultat(jour, exercicesTermines, totalExercices){
         exercicesTermines = parseInt(prompt("veuiller saisire combien d'exercices terminer entre 1 et 20 : "))
     }
 
-    return{
+    return {
         resultats: [
- { jour:jour, 
-   exercicesTermines: exercicesTermines,
-   totalExercices: totalExercices},
- ]
- }
- 
+            {
+                jour: jour,
+                exercicesTermines: exercicesTermines,
+                totalExercices: totalExercices
+            },
+        ]
+    }
+
 }
 function rechercherApprenant(id) {
     for (let i = 0; i < apprenants.length; i++) {
@@ -142,11 +171,11 @@ function rechercherApprenant(id) {
             return apprenants[i];
         }
     }
-    return "Apprenant introuvable"; 
+    return "Apprenant introuvable";
 }
 
 
-function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercices, challengeTermine){
+function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercices, challengeTermine) {
     idApprenant = prompt("veiller saisire id de apprenant: ")
 
     let Apprenant = rechercherApprenant(idApprenant)
@@ -173,14 +202,14 @@ function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercice
     for (let i = 0; i < Apprenant.resultats.length; i++) {
         if (Apprenant.resultats[i].jour === jour) {
             Apprenant.resultats[i].exercicesTermines = exercicesTermines;
-            Apprenant.resultats[i].challengeTermine = challengeTermine;             
+            Apprenant.resultats[i].challengeTermine = challengeTermine;
         }
     }
     const nouveauResultat = {
-        jour : jour,
-        exercicesTermines : exercicesTermines,
-        totalExercices : totalExercices,
-        challengeTermine : challengeTermine,
+        jour: jour,
+        exercicesTermines: exercicesTermines,
+        totalExercices: totalExercices,
+        challengeTermine: challengeTermine,
     }
 
     Apprenant.resultats.push(nouveauResultat)
@@ -188,7 +217,7 @@ function enregistrerResultat(idApprenant, jour, exercicesTermines, totalExercice
 
 }
 
-function rechercherParNom(nomComplet){
+function rechercherParNom(nomComplet) {
     nomComplet = prompt("Veuillez saisir le nom de l'apprenant : ");
     if (!nomComplet) {
         console.log("Erreur : Le nomComplet ne peut pas etre vide.");
@@ -197,38 +226,38 @@ function rechercherParNom(nomComplet){
     for (let i = 0; i < apprenants.length; i++) {
         if (normaliserNom(apprenants[i].nomComplet).includes(normaliserNom(nomComplet))) {
             return apprenants[i];
-            
+
         }
     }
-        console.log("Aucun apprenant trouve pour : " + nomComplet);
-    
+    console.log("Aucun apprenant trouve pour : " + nomComplet);
+
 }
 
-function rechercherParId(id) {
-    
-    id = parseInt(prompt("veuiller saisire ID pou le verifier : "))
+function rechercherParId() {
+
+    const id = parseInt(prompt("veuiller saisire ID pou le verifier : "))
     for (let i = 0; i < apprenants.length; i++) {
         while (apprenants[i].id == id) {
             console.log("Apprenant trouvable")
             return apprenants[i];
         }
     }
-    return "Apprenant introuvable"; 
+    return "Apprenant introuvable";
 }
-function calculerProgression(apprenants){
+function calculerProgression(apprenants) {
 
     let TotaleExsSemain = 0;
     let TotalExercicesFaits = 0;
     let TotalChallengesValides = 0;
-    for (let i = 0; i < apprenants.length; i++){
-    for (let j=0 ;j<apprenants[i].resultats.length;j++){
-        TotalExercicesFaits += apprenants[i].resultats[j].exercicesTermines;
-        TotaleExsSemain +=apprenants[i].resultats[j].totalExercices;
+    for (let i = 0; i < apprenants.length; i++) {
+        for (let j = 0; j < apprenants[i].resultats.length; j++) {
+            TotalExercicesFaits += apprenants[i].resultats[j].exercicesTermines;
+            TotaleExsSemain += apprenants[i].resultats[j].totalExercices;
 
-        if(apprenants[i].resultats[j].challengeTermines == true ){
-            TotalChallengesValides++;
+            if (apprenants[i].resultats[j].challengeTermine == true) {
+                TotalChallengesValides++;
+            }
         }
-    }
     }
 
     let Progretion = Math.floor((TotalExercicesFaits / TotaleExsSemain) * 100);
@@ -250,29 +279,29 @@ function calculerProgression(apprenants){
 
 }
 
-function filtrerParNiveau (apprenants){
+function filtrerParNiveau(apprenants) {
 
     let niveau = prompt("veuiller saisire votre niveau A renforcer / Solide /En progression :")
     if (!niveau) return [];
     let resultats = [];
-    for(let i=0 ; i<apprenants.length ; i++){
+    for (let i = 0; i < apprenants.length; i++) {
         let info = calculerProgression([apprenants[i]]);
-    if(info.statut.toLowerCase() === niveau.toLowerCase()){
-        resultats.push({
-            id: apprenants[i].id,
-            nomComplet: apprenants[i].nomComplet,
-            progression: info.pourcentage ,
-            niveau: info.statut
-        });
+        if (info.statut.toLowerCase() === niveau.toLowerCase()) {
+            resultats.push({
+                id: apprenants[i].id,
+                nomComplet: apprenants[i].nomComplet,
+                progression: info.pourcentage,
+                niveau: info.statut
+            });
 
 
-    }        
+        }
     }
     return resultats;
 }
 
-function trierParProgression(){
-let n = apprenants.length;
+function trierParProgression() {
+    let n = apprenants.length;
 
     for (let i = 0; i < n - 1; i++) {
         for (let j = i + 1; j < n; j++) {
@@ -294,7 +323,7 @@ let n = apprenants.length;
     }
 
 }
-function trierParAlphabetique(){
+function trierParAlphabetique() {
     let n = apprenants.length;
 
     for (let i = 0; i < n - 1; i++) {
@@ -310,7 +339,7 @@ function trierParAlphabetique(){
             }
         }
     }
-        console.log("=== APPRENANTS TRIES PAR ORDRE ALPHABETIQUE (A-Z) ===");
+    console.log("=== APPRENANTS TRIES PAR ORDRE ALPHABETIQUE (A-Z) ===");
     for (let k = 0; k < apprenants.length; k++) {
         let info = calculerProgression([apprenants[k]]);
         console.log((k + 1) + ". " + apprenants[k].nomComplet + " | Progression : " + info.pourcentage + "% (" + info.statut + ")");
@@ -342,7 +371,7 @@ function afficherTableauDeBord(apprenants) {
 
     let moyenneGroupe = Math.round(sommePourcentages / totalApprenants);
 
-    console.log("\n Moyenne du progression de groupe : " + moyenneGroupe + "% \n" );
+    console.log("\n Moyenne du progression de groupe : " + moyenneGroupe + "% \n");
 }
 
 function afficherListeApprenants(apprenants) {
@@ -354,7 +383,7 @@ function afficherListeApprenants(apprenants) {
 
     for (let i = 0; i < apprenants.length; i++) {
         let info = calculerProgression([apprenants[i]]);
-        
+
         console.log((i + 1) + ". ID: " + apprenants[i].id + " | Nom: " + apprenants[i].nomComplet + " | Ville: " + apprenants[i].ville);
         console.log("   Progression: " + info.pourcentage + "% | Statut: " + info.statut);
         console.log("-----------------------------------");
