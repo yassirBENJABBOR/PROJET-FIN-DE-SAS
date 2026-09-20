@@ -174,10 +174,9 @@ function rechercherApprenant(id) {
     return "Apprenant introuvable";
 }
 
-// a exploiter sur is id valide li kayna ajouter apprenant 
+// a exploiter sur isidvalide li kayna ajouter apprenant 
 function enregistrerResultat() {
     let idApprenant
-
     let Apprenant
     do {
         idApprenant = prompt("veiller saisire id de apprenant: ")
@@ -223,7 +222,7 @@ function enregistrerResultat() {
 
 }
 
-function rechercherParNom(nomComplet) {
+function rechercherParNom() {
     nomComplet = prompt("Veuillez saisir le nom de l'apprenant : ");
     if (!nomComplet) {
         console.log("Erreur : Le nomComplet ne peut pas etre vide.");
@@ -250,7 +249,7 @@ function rechercherParId() {
     }
     return "Apprenant introuvable";
 }
-function calculerProgression(apprenants) {
+function calculerProgression() {
 
     let TotaleExsSemain = 0;
     let TotalExercicesFaits = 0;
@@ -305,11 +304,11 @@ function filtrerParNiveau(apprenants) {
     }
     return resultats;
 }
-
+// babelsorte
 function trierParProgression() {
     let n = apprenants.length;
 
-    for (let i = 0; i < n - 1; i++) {
+    for (let i = 0; i <= n - 1; i++) {
         for (let j = i + 1; j < n; j++) {
 
             let progI = calculerProgression([apprenants[i]]).pourcentage;
