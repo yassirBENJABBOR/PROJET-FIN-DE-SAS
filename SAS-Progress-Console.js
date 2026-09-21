@@ -7,7 +7,7 @@ const apprenants = [
         ville: "Nador",
         resultats: [
             {
-                jour: 1, exercicesTermines: 18,
+                jour: 1, exercicesTermines: 9,
                 totalExercices: 20, challengeTermine: true
             },
             {
@@ -22,7 +22,7 @@ const apprenants = [
         ville: "Oujda",
         resultats: [
             {
-                jour: 1, exercicesTermines: 12,
+                jour: 1, exercicesTermines: 15,
                 totalExercices: 20, challengeTermine: false
             }
         ]
@@ -32,7 +32,7 @@ const apprenants = [
         ville: "Oujda",
         resultats: [
             {
-                jour: 1, exercicesTermines: 7,
+                jour: 1, exercicesTermines: 19,
                 totalExercices: 20, challengeTermine: false
             }
         ]
@@ -43,6 +43,8 @@ const apprenants = [
 
 //TABLEAU DE BORDE 
 let choix;
+
+do {
     console.log("---------SAS PROGRESS CONSOLE---------");
     console.log("1. Afficher le tableau de bord");
     console.log("2. Afficher la liste des apprenants");
@@ -54,8 +56,6 @@ let choix;
     console.log("8. Trier les apprenants par progression décroissante");
     console.log("9. Trier les apprenants par ordre alphabétique");
     console.log("0. QUITER");
-do {
-
     choix = parseInt(prompt("Votre choix :"));
     switch (choix) {
         case 1:
@@ -249,7 +249,7 @@ function rechercherParId() {
     }
     return "Apprenant introuvable";
 }
-function calculerProgression() {
+function calculerProgression(apprenants) {
 
     let TotaleExsSemain = 0;
     let TotalExercicesFaits = 0;
@@ -304,7 +304,7 @@ function filtrerParNiveau(apprenants) {
     }
     return resultats;
 }
-// babelsorte
+// algoritme dyal babelsorte
 function trierParProgression() {
     let n = apprenants.length;
 
